@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArchiveRestore } from 'lucide-react';
+import { ArchiveRestore, Package } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -99,7 +99,25 @@ export default function Inventory() {
               const statusLabel = status === 'out-of-stock' ? 'Out of Stock' : status === 'low-stock' ? 'Low Stock' : 'In Stock';
               return (
                 <TableRow key={p.id} className="hover:bg-slate-50">
-                  <TableCell className="font-medium text-slate-900">{p.name}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-2xs">
+                        {p.imageUrl ? (
+                          <img
+                            src={p.imageUrl}
+                            alt={p.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                              (e.target as HTMLElement).parentElement?.querySelector('.inv-fallback-icon')?.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                        <Package className={`w-4 h-4 text-slate-400 inv-fallback-icon ${p.imageUrl ? 'hidden' : ''}`} />
+                      </div>
+                      <span className="font-medium text-slate-900">{p.name}</span>
+                    </div>
+                  </TableCell>
                   <TableCell className="font-mono text-xs text-slate-500">{p.sku}</TableCell>
                   <TableCell><Badge variant="default">{p.category?.name}</Badge></TableCell>
                   <TableCell className="text-center font-semibold text-slate-800">{p.stock}</TableCell>

@@ -157,6 +157,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (data.stock !== undefined) updates.stock = parseInt(data.stock);
     if (data.minStock !== undefined) updates.minStock = parseInt(data.minStock);
     if (data.status !== undefined) updates.status = data.status;
+    if (data.imageUrl !== undefined) updates.imageUrl = data.imageUrl;
 
     await db.collection('Product').updateOne({ _id: new ObjectId(id) }, { $set: updates });
     const updated = await db.collection('Product').findOne({ _id: new ObjectId(id) });

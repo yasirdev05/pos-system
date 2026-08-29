@@ -10,16 +10,19 @@
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "seed": "tsx seed.ts",
-    "seed:native": "tsx seed-native.ts"
+    "seed:native": "tsx seed-native.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",
+    "@types/multer": "^2.2.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^7.5.0",
+    "multer": "^2.3.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

@@ -291,11 +291,22 @@ function ProductCard({ product, onAdd, inCart }: { product: Product; onAdd: () =
   const outOfStock = product.stock === 0;
   return (
     <div className={`bg-white rounded-xl border p-3 flex flex-col gap-2 transition-all hover:shadow-md ${outOfStock ? 'opacity-60' : 'border-slate-200 hover:border-slate-300'}`}>
-      <div className="w-full h-24 rounded-lg bg-slate-100 flex items-center justify-center">
-        <Package className="w-8 h-8 text-slate-300" />
+      <div className="w-full h-28 rounded-lg bg-slate-100 border border-slate-100 flex items-center justify-center overflow-hidden relative">
+        {product.imageUrl ? (
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform hover:scale-105"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = 'none';
+              (e.target as HTMLElement).parentElement?.querySelector('.pos-fallback-icon')?.classList.remove('hidden');
+            }}
+          />
+        ) : null}
+        <Package className={`w-8 h-8 text-slate-300 pos-fallback-icon ${product.imageUrl ? 'hidden' : ''}`} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-slate-900 truncate">{product.name}</p>
+        <p className="text-sm font-semibold text-slate-900 truncate" title={product.name}>{product.name}</p>
         <p className="text-[10px] text-slate-400 font-mono">{product.sku}</p>
         <div className="flex items-center justify-between mt-1.5">
           <span className="text-base font-bold text-slate-900">{formatCurrency(product.sellingPrice)}</span>

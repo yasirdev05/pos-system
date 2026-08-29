@@ -14,7 +14,8 @@ function getDbName(uri: string): string {
 
 export async function getDb() {
   if (!client) {
-    client = new MongoClient(MONGO_URI, { directConnection: true });
+    const isSrv = MONGO_URI.startsWith('mongodb+srv://');
+    client = new MongoClient(MONGO_URI, isSrv ? {} : { directConnection: true });
     await client.connect();
   }
   return client.db(getDbName(MONGO_URI));

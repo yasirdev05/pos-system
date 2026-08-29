@@ -35,11 +35,8 @@ async function main() {
   console.log('🌱 Seeding database with native MongoDB driver...');
   console.log(`   Connecting to: ${MONGO_URI.replace(/:([^@]+)@/, ':***@')}`);
 
-  const client = new MongoClient(MONGO_URI, {
-  tls: true,
-  tlsAllowInvalidCertificates: true, // ⚠️ only for testing/development – remove for production
-  tlsAllowInvalidHostnames: true,
-});
+  const isSrv = MONGO_URI.startsWith('mongodb+srv://');
+  const client = new MongoClient(MONGO_URI, isSrv ? {} : { directConnection: true });
   await client.connect();
   console.log('✅ Connected to MongoDB');
 

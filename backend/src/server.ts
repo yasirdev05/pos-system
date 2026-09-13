@@ -7,22 +7,21 @@ dotenv.config();
 const app = express();
 
 /*
- * CORS
- *
- * During development:
- * FRONTEND_URL=http://localhost:5173
- *
- * During production:
- * FRONTEND_URL=https://your-frontend.vercel.app
+ * Dynamic CORS configuration allowing all origins (Vercel, localhost, custom domains) with credentials
  */
-const allowedOrigin = process.env.FRONTEND_URL || "*";
-
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: (origin, callback) => {
+      // Allow all incoming origins dynamically
+      callback(null, true);
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
   })
 );
+
+app.options("*", cors());
 
 /*
  * Middleware
@@ -47,16 +46,36 @@ import uploadRoutes from "./routes/upload";
 // Serve uploaded files statically
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
+// Dual route registration (handles both with /api and without /api)
 app.use("/api/auth", authRoutes);
+app.use("/auth", authRoutes);
+
 app.use("/api/products", productRoutes);
+app.use("/products", productRoutes);
+
 app.use("/api/categories", categoryRoutes);
+app.use("/categories", categoryRoutes);
+
 app.use("/api/customers", customerRoutes);
+app.use("/customers", customerRoutes);
+
 app.use("/api/suppliers", supplierRoutes);
+app.use("/suppliers", supplierRoutes);
+
 app.use("/api/sales", saleRoutes);
+app.use("/sales", saleRoutes);
+
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/dashboard", dashboardRoutes);
+
 app.use("/api/inventory", inventoryRoutes);
+app.use("/inventory", inventoryRoutes);
+
 app.use("/api/expenses", expenseRoutes);
+app.use("/expenses", expenseRoutes);
+
 app.use("/api/upload", uploadRoutes);
+app.use("/upload", uploadRoutes);
 
 /*
  * Health Check

@@ -16,8 +16,18 @@ function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function cleanMongoUri(raw) {
+  if (!raw) return 'mongodb://127.0.0.1:27017/pos_db';
+  let cleaned = String(raw).trim();
+  while (/^DATABASE_URL\s*=\s*/i.test(cleaned) || /^["']/.test(cleaned)) {
+    cleaned = cleaned.replace(/^DATABASE_URL\s*=\s*/i, '');
+    cleaned = cleaned.replace(/^["']+|["']+$/g, '').trim();
+  }
+  return cleaned;
+}
+
 async function run() {
-  const uri = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/pos_db';
+  const uri = cleanMongoUri(process.env.DATABASE_URL);
   const client = new MongoClient(uri);
   await client.connect();
   const dbName = uri.split('/').pop().split('?')[0] || 'pos_db';

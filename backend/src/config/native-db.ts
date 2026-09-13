@@ -10,7 +10,17 @@ try {
   // Ignore if not permitted
 }
 
-const MONGO_URI = process.env.DATABASE_URL || 'mongodb+srv://7262yas_db_user:CyqWqFYKsSEaeU7e@cluster0.cc7r21b.mongodb.net/?appName=pos_db';
+function cleanMongoUri(raw?: string): string {
+  if (!raw) return 'mongodb://127.0.0.1:27017/pos_db';
+  let cleaned = raw.trim();
+  while (/^DATABASE_URL\s*=\s*/i.test(cleaned) || /^["']/.test(cleaned)) {
+    cleaned = cleaned.replace(/^DATABASE_URL\s*=\s*/i, '');
+    cleaned = cleaned.replace(/^["']+|["']+$/g, '').trim();
+  }
+  return cleaned;
+}
+
+const MONGO_URI = cleanMongoUri(process.env.DATABASE_URL);
 
 let client: MongoClient | null = null;
 

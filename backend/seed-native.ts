@@ -6,7 +6,15 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
+import dns from 'dns';
 dotenv.config();
+
+// Fix for Windows / ISP DNS blocking MongoDB Atlas SRV lookups (querySrv ECONNREFUSED)
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch (e) {
+  // Ignore if not permitted
+}
 
 const MONGO_URI = process.env.DATABASE_URL || "mongodb+srv://7262yas_db_user:CyqWqFYKsSEaeU7e@cluster0.cc7r21b.mongodb.net/pos_db?retryWrites=true&w=majority";
 

@@ -1,5 +1,11 @@
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
+const dns = require('dns');
+require('dotenv').config();
+
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch (e) {}
 
 function daysAgo(n) {
   const d = new Date();

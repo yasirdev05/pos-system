@@ -1,7 +1,7 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import dns from 'dns';
-dotenv.config();
+dotenv.config({ override: true });
 
 // Fix for Windows / ISP DNS blocking MongoDB Atlas SRV lookups (querySrv ECONNREFUSED)
 try {
@@ -12,12 +12,12 @@ try {
 
 function cleanMongoUri(raw?: string): string {
   if (!raw) return 'mongodb://127.0.0.1:27017/pos_db';
-  let cleaned = raw.trim();
-  while (/^DATABASE_URL\s*=\s*/i.test(cleaned) || /^["']/.test(cleaned)) {
-    cleaned = cleaned.replace(/^DATABASE_URL\s*=\s*/i, '');
-    cleaned = cleaned.replace(/^["']+|["']+$/g, '').trim();
+  const str = String(raw).trim();
+  const match = str.match(/(mongodb(?:\+srv)?:\/\/[^\s"']+)/i);
+  if (match) {
+    return match[1];
   }
-  return cleaned;
+  return str.replace(/^["']+|["']+$/g, '');
 }
 
 const MONGO_URI = cleanMongoUri(process.env.DATABASE_URL);

@@ -1,7 +1,7 @@
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const dns = require('dns');
-require('dotenv').config();
+require('dotenv').config({ override: true });
 
 try {
   dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
@@ -18,12 +18,12 @@ function rand(min, max) {
 
 function cleanMongoUri(raw) {
   if (!raw) return 'mongodb://127.0.0.1:27017/pos_db';
-  let cleaned = String(raw).trim();
-  while (/^DATABASE_URL\s*=\s*/i.test(cleaned) || /^["']/.test(cleaned)) {
-    cleaned = cleaned.replace(/^DATABASE_URL\s*=\s*/i, '');
-    cleaned = cleaned.replace(/^["']+|["']+$/g, '').trim();
+  const str = String(raw).trim();
+  const match = str.match(/(mongodb(?:\+srv)?:\/\/[^\s"']+)/i);
+  if (match) {
+    return match[1];
   }
-  return cleaned;
+  return str.replace(/^["']+|["']+$/g, '');
 }
 
 async function run() {

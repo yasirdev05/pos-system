@@ -17,9 +17,11 @@ function rand(min, max) {
 }
 
 async function run() {
-  const client = new MongoClient('mongodb://127.0.0.1:27017/pos_db');
+  const uri = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/pos_db';
+  const client = new MongoClient(uri);
   await client.connect();
-  const db = client.db('pos_db');
+  const dbName = uri.split('/').pop().split('?')[0] || 'pos_db';
+  const db = client.db(dbName);
 
   const users = db.collection('User');
   const categories = db.collection('Category');

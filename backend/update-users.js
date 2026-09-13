@@ -1,8 +1,16 @@
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
+const dns = require('dns');
+require('dotenv').config();
+
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch (e) {}
+
+const uri = process.env.DATABASE_URL || 'mongodb://127.0.0.1:27017/pos_db';
 
 async function run() {
-  const client = new MongoClient('mongodb://127.0.0.1:27017');
+  const client = new MongoClient(uri);
   await client.connect();
   const db = client.db('pos_db');
   const usersCol = db.collection('User');
